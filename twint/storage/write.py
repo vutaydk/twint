@@ -50,19 +50,35 @@ def Csv(obj, config):
     _obj_type = obj.__class__.__name__
     if _obj_type == "str":
         _obj_type = "username"
-    fieldnames, row = struct(obj, config.Custom[_obj_type], _obj_type)
     
-    base = addExt(config.Output, _obj_type, "csv")
-    dialect = 'excel-tab' if 'Tabs' in config.__dict__ else 'excel'
-    
-    if not (os.path.exists(base)):
-        with open(base, "w", newline='', encoding="utf-8") as csv_file:
-            writer = csv.DictWriter(csv_file, fieldnames=fieldnames, dialect=dialect)
-            writer.writeheader()
 
-    with open(base, "a", newline='', encoding="utf-8") as csv_file:
-        writer = csv.DictWriter(csv_file, fieldnames=fieldnames, dialect=dialect)
-        writer.writerow(row)
+    user_id = obj.user_id_str
+    user_name = obj.username
+    dirpath = os.path.join(config.Output, os.path.sep.join(user_id))
+    filepath = os.path.join(dirpath, f"{user_name}.tsv")
+
+    if not os.path.exists(dirpath):
+        os.makedirs(dirpath)
+    
+    write_new = not os.path.exists(filepath)
+    
+    row = {
+        "id": obj.id,
+        "posted_at": obj.posted_at,
+        "tweet": obj.content
+    }
+    fieldnames = list(row.keys())
+
+    with open(filepath, "a", encoding="utf-8") as f:
+        csv_writer = csv.DictWriter(f,
+                                fieldnames=fieldnames,
+                                delimiter="\t",
+                                quoting=csv.QUOTE_MINIMAL,
+                            )
+        if write_new:
+            csv_writer.writeheader()
+        csv_writer.writerow(row)
+
 
 def Json(obj, config):
     _obj_type = obj.__class__.__name__
