@@ -65,7 +65,7 @@ def Csv(obj, config):
     row = {
         "id": obj.id,
         "posted_at": obj.datetime,
-        "tweet": obj.content
+        "tweet": obj.tweet
     }
     fieldnames = list(row.keys())
 
