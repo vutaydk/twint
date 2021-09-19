@@ -54,8 +54,8 @@ def Csv(obj, config):
 
     user_id = obj.user_id_str
     user_name = obj.username
-    dirpath = os.path.join(config.Output, os.path.sep.join(user_id))
-    filepath = os.path.join(dirpath, f"{user_name}.tsv")
+    dirpath = os.path.join(config.Output, os.path.sep.join(user_id[:5]))
+    filepath = os.path.join(dirpath, f"{user_id}-{user_name}.tsv")
 
     if not os.path.exists(dirpath):
         os.makedirs(dirpath)
